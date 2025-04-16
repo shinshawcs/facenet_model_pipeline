@@ -1,0 +1,8 @@
+inference:
+  batch_size: 1
+  device: cpu
+  num_workers: 4
+model:
+  onnx_path: models/facenet_model_dynamic_quantized.onnx
+  path: models/facenet_model_dynamic_quantized.pth
+  version: v1
