@@ -1,0 +1,7 @@
+INFO:     Will watch for changes in these directories: ['/Users/xxiao/MLE/MLE/1vs1/homework10/fast_api']
+INFO:     Uvicorn running on http://0.0.0.0:8001 (Press CTRL+C to quit)
+INFO:     Started reloader process [24116] using StatReload
+INFO:     Started server process [24121]
+INFO:     Waiting for application startup.
+INFO:     Application startup complete.
+WARNING:  Invalid HTTP request received.

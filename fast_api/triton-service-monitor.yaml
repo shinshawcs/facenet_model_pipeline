@@ -1,0 +1,17 @@
+apiVersion: monitoring.coreos.com/v1
+kind: ServiceMonitor
+metadata:
+  name: triton-service-monitor
+  namespace: monitoring
+  labels:
+    release: prometheus-operator
+spec:
+  selector:
+    matchLabels:
+      app: triton
+  namespaceSelector:
+    matchNames:
+      - mlops
+  endpoints:
+    - port: prometheus-metrics
+      interval: 15s

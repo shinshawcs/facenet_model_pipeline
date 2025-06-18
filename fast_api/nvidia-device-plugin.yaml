@@ -1,0 +1,35 @@
+apiVersion: apps/v1
+kind: DaemonSet
+metadata:
+  name: nvidia-device-plugin-daemonset
+  namespace: kube-system
+spec:
+  selector:
+    matchLabels:
+      name: nvidia-device-plugin-ds
+  template:
+    metadata:
+      labels:
+        name: nvidia-device-plugin-ds
+    spec:
+      containers:
+        - name: nvidia-device-plugin-ctr
+          image: nvcr.io/nvidia/k8s-device-plugin:v0.13.0
+          env:
+            - name: FAIL_ON_INIT_ERROR
+              value: "false"
+            - name: LD_LIBRARY_PATH
+              value: "/usr/local/nvidia/lib64:/usr/local/cuda/lib64"
+          volumeMounts:
+            - name: device-plugin
+              mountPath: /var/lib/kubelet/device-plugins
+            - name: nvidia-libs
+              mountPath: /usr/local/nvidia/lib64
+      volumes:
+        - name: device-plugin
+          hostPath:
+            path: /var/lib/kubelet/device-plugins
+        - name: nvidia-libs
+          hostPath:
+            path: /home/kubernetes/bin/nvidia/lib64
+            type: Directory

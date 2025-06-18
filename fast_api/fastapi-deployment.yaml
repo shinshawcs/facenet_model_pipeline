@@ -1,0 +1,51 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: facenet-api
+  namespace: mlops
+  labels:
+    app: facenet-api
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: facenet-api
+  template:
+    metadata:
+      labels:
+        app: facenet-api
+    spec:
+      containers:
+      - name: facenet-api
+        image: shinshaw/facenet-api:latest
+        imagePullPolicy: Always
+        ports:
+        - containerPort: 8000
+        env:
+          - name: TRITON_URL
+            valueFrom:
+              secretKeyRef:
+                name: facenet-secrets
+                key: TRITON_URL
+          - name: DATABASE_URL
+            valueFrom:
+              secretKeyRef:
+                name: facenet-secrets
+                key: DATABASE_URL
+          - name: GOOGLE_APPLICATION_CREDENTIALS
+            value: "/app/credentials.json"
+        volumeMounts:
+        - name: google-credentials
+          mountPath: /app/credentials.json
+          subPath: credentials.json
+        resources:
+          requests:
+            cpu: "100m"     
+            memory: "512Mi"
+          limits:
+            cpu: "500m"
+            memory: "1024Mi"
+      volumes:
+      - name: google-credentials
+        secret:
+          secretName: gcp-storage-credentials

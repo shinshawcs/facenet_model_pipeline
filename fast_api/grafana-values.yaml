@@ -1,0 +1,15 @@
+grafana:
+  persistence:
+    enabled: true
+    accessModes:
+      - ReadWriteOnce
+    size: 1Gi
+    storageClassName: "standard"  
+    annotations: {}
+    finalizers:
+      - kubernetes.io/pvc-protection
+
+  adminPassword: "prom-operator"  
+  service:
+    type: LoadBalancer
+    port: 3000
