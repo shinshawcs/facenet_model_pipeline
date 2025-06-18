@@ -1,0 +1,38 @@
+apiVersion: batch/v1
+kind: Job
+metadata:
+  name: data-preprocess
+  namespace: airflow
+spec:
+  template:
+    metadata:
+      labels:
+        app: data-preprocess
+    spec:
+      restartPolicy: Never
+      nodeSelector:
+        cloud.google.com/gke-nodepool: cpu-pool
+      containers:
+      - name: data-preprocess
+        image: shinshaw/facenet-preprocess:latest
+        imagePullPolicy: Always
+        command: ["python", "/app/data_preprocess.py"]
+        env:
+        - name: AIRFLOW_SHARED_DATA
+          value: "/mnt/data"
+        - name: GOOGLE_APPLICATION_CREDENTIALS
+          value: "/app/credentials.json"
+        volumeMounts:
+        - name: airflow-data
+          mountPath: /mnt/data
+        - name: gcs-credentials
+          mountPath: /app/credentials.json
+          subPath: credentials.json
+          readOnly: true
+      volumes:
+      - name: airflow-data
+        persistentVolumeClaim:
+          claimName: airflow-data-pvc
+      - name: gcs-credentials
+        secret:
+          secretName: gcp-storage-credentials
