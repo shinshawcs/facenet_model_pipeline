@@ -23,9 +23,9 @@ env:
   - name: AIRFLOW__SMTP__SMTP_HOST
     value: smtp.gmail.com
   - name: AIRFLOW__SMTP__SMTP_USER
-    value: egatech2017@gmail.com
+    value: ******@gmail.com
   - name: AIRFLOW__SMTP__SMTP_PASSWORD
-    value: dlzzbbnmfajfxkih
+    value: ******
   - name: AIRFLOW__SMTP__SMTP_PORT
     value: "587"
   - name: AIRFLOW__SMTP__SMTP_STARTTLS
@@ -33,7 +33,7 @@ env:
   - name: AIRFLOW__SMTP__SMTP_SSL
     value: "false"
   - name: AIRFLOW__SMTP__SMTP_MAIL_FROM
-    value: egatech2017@gmail.com
+    value: ******@gmail.com
   - name: AIRFLOW__CORE__LOAD_EXAMPLES
     value: "false"
   - name: AIRFLOW__LOGGING__LOGGING_LEVEL

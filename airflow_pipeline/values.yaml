@@ -20,12 +20,12 @@ airflow:
     AIRFLOW__CORE__LOAD_EXAMPLES: "false"
     AIRFLOW__LOGGING__LOGGING_LEVEL: INFO
     AIRFLOW__SMTP__SMTP_HOST: smtp.gmail.com
-    AIRFLOW__SMTP__SMTP_USER:  egatech2017@gmail.com
+    AIRFLOW__SMTP__SMTP_USER:  ******@gmail.com
     AIRFLOW__SMTP__SMTP_SSL: "false"
-    AIRFLOW__SMTP__SMTP_PASSWORD: dlzzbbnmfajfxkih
+    AIRFLOW__SMTP__SMTP_PASSWORD: ******
     AIRFLOW__SMTP__SMTP_STARTTLS: "true"
     AIRFLOW__SMTP__SMTP_PORT: 587
-    AIRFLOW__SMTP__SMTP_MAIL_FROM: egatech2017@gmail.com
+    AIRFLOW__SMTP__SMTP_MAIL_FROM: ******@gmail.com
   users:
     - username: admin
       password: admin
