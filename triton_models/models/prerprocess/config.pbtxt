@@ -1,0 +1,30 @@
+name: "preprocess"
+backend: "python"
+max_batch_size: 32
+
+input [
+  {
+    name: "image"
+    data_type: TYPE_UINT8
+    dims: [ -1 ]  # bytes
+  }
+]
+
+output [
+  {
+    name: "input"
+    data_type: TYPE_FP32
+    dims: [ 3, 160, 160 ]  # batch, C, H, W
+  }
+]
+
+dynamic_batching {
+  preferred_batch_size: [4, 8, 16, 32]
+  max_queue_delay_microseconds: 500
+}
+
+instance_group [
+  {
+    kind: KIND_GPU
+  }
+]

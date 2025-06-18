@@ -1,0 +1,1 @@
+pip install --no-cache-dir -r /models/preprocess/1/requirements.txt

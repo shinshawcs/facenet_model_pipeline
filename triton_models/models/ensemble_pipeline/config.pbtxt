@@ -1,0 +1,60 @@
+name: "ensemble_pipeline"
+platform: "ensemble"
+max_batch_size: 32
+
+input [
+  {
+    name: "image"
+    data_type: TYPE_UINT8
+    dims: [ -1]
+  }
+]
+
+output [
+  {
+    name: "category"
+    data_type: TYPE_INT32
+    dims: [ -1 ]
+  }
+]
+
+ensemble_scheduling {
+  step [
+    {
+      model_name: "preprocess"
+      model_version: -1
+      input_map {
+        key: "image"
+        value: "image"
+      }
+      output_map {
+        key: "input"
+        value: "input"
+      }
+    },
+    {
+      model_name: "facenet_tensorrt"
+      model_version: -1
+      input_map {
+        key: "input"
+        value: "input"
+      }
+      output_map {
+        key: "output"
+        value: "output"
+      }
+    },
+    {
+      model_name: "postprocess"
+      model_version: -1
+      input_map {
+        key: "output"
+        value: "output"
+      }
+      output_map {
+        key: "category"
+        value: "category"
+      }
+    }
+  ]
+}

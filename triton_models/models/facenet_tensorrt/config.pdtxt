@@ -1,0 +1,46 @@
+name: "facenet_tensorrt"
+platform: "tensorrt_plan"
+max_batch_size: 32 
+
+input [
+  {
+    name: "input"    
+    data_type: TYPE_FP32
+    dims: [3, 160, 160]  
+  }
+]
+
+output [
+  {
+    name: "output"    
+    data_type: TYPE_FP32
+    dims: [1000]        
+  }
+]
+
+dynamic_batching {
+  preferred_batch_size: [4, 8, 16, 32]
+  max_queue_delay_microseconds: 500
+}
+
+instance_group [
+  {
+    kind: KIND_GPU
+  }
+]
+
+
+model_warmup [
+  {
+    name: "warmup_sample"
+    batch_size: 1 
+    inputs {
+      key: "input"
+      value {
+        data_type: TYPE_FP32
+        dims: [3, 160, 160]
+        zero_data: true
+      }
+    }
+  }
+]
