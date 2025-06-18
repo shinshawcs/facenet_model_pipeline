@@ -1,0 +1,144 @@
+executor: LocalExecutor
+
+images:
+  airflow:
+    repository: apache/airflow
+    tag: 2.7.2-python3.9
+    pullPolicy: IfNotPresent
+
+data:
+  metadataConnection:
+    user: postgres
+    pass: postgres
+    protocol: postgresql+psycopg2
+    host: airflow-postgresql
+    port: 5432
+    db: airflow
+
+env:
+  - name: AIRFLOW__DATABASE__SQL_ALCHEMY_CONN
+    value: postgresql+psycopg2://postgres:postgres@airflow-postgresql.airflow:5432/airflow
+  - name: AIRFLOW__CORE__AUTH_MANAGER
+    value: airflow.auth.managers.fab.fab_auth_manager.FabAuthManager
+  - name: AIRFLOW__SMTP__SMTP_HOST
+    value: smtp.gmail.com
+  - name: AIRFLOW__SMTP__SMTP_USER
+    value: egatech2017@gmail.com
+  - name: AIRFLOW__SMTP__SMTP_PASSWORD
+    value: dlzzbbnmfajfxkih
+  - name: AIRFLOW__SMTP__SMTP_PORT
+    value: "587"
+  - name: AIRFLOW__SMTP__SMTP_STARTTLS
+    value: "true"
+  - name: AIRFLOW__SMTP__SMTP_SSL
+    value: "false"
+  - name: AIRFLOW__SMTP__SMTP_MAIL_FROM
+    value: egatech2017@gmail.com
+  - name: AIRFLOW__CORE__LOAD_EXAMPLES
+    value: "false"
+  - name: AIRFLOW__LOGGING__LOGGING_LEVEL
+    value: INFO
+
+extraPipPackages:
+  - apache-airflow-providers-docker
+  - docker
+  - apache-airflow-providers-cncf-kubernetes
+
+webserver:
+  replicas: 1
+  waitForMigrations:
+    enabled: true
+  # service:
+  #   type: NodePort
+  startupProbe:
+    initialDelaySeconds: 30
+    timeoutSeconds: 30
+    periodSeconds: 60
+    failureThreshold: 15
+  readinessProbe:
+    initialDelaySeconds: 40
+    timeoutSeconds: 10
+    failureThreshold: 5
+  livenessProbe:
+    initialDelaySeconds: 60
+    timeoutSeconds: 10
+    failureThreshold: 5
+  nodeSelector:
+    #kubernetes.io/hostname: gke-facenet-airflow-gpu-pool-d96bb835-1gj9
+    cloud.google.com/gke-accelerator: nvidia-tesla-t4
+  tolerations:
+    - key: "nvidia.com/gpu"
+      operator: "Exists"
+      effect: "NoSchedule"
+  extraVolumes:
+    - name: airflow-data-pvc
+      persistentVolumeClaim:
+        claimName: airflow-data-pvc
+  extraVolumeMounts:
+    - name: airflow-data-pvc
+      mountPath: /opt/airflow/shared
+  resources:
+    requests:
+      memory: 512Mi
+      cpu: 250m
+    limits:
+      memory: 1Gi
+      cpu: 500m
+  securityContext:
+    runAsUser: 0
+
+scheduler:
+  startupProbe:
+    failureThreshold: 10
+    periodSeconds: 60
+    timeoutSeconds: 30
+    initialDelaySeconds: 30
+  livenessProbe:
+    initialDelaySeconds: 30
+    periodSeconds: 60
+    timeoutSeconds: 30
+    failureThreshold: 5
+  nodeSelector:
+    #kubernetes.io/hostname: gke-facenet-airflow-gpu-pool-d96bb835-1gj9
+    cloud.google.com/gke-accelerator: nvidia-tesla-t4
+  tolerations:
+    - key: "nvidia.com/gpu"
+      operator: "Exists"
+      effect: "NoSchedule"
+  extraVolumes:
+    - name: airflow-data-pvc
+      persistentVolumeClaim:
+        claimName: airflow-data-pvc
+  extraVolumeMounts:
+    - name: airflow-data-pvc
+      mountPath: /opt/airflow/shared
+
+  waitForMigrations:
+    enabled: false
+  securityContext:
+    runAsUser: 0
+
+triggerer:
+  nodeSelector:
+    #kubernetes.io/hostname: gke-facenet-airflow-gpu-pool-d96bb835-1gj9
+    cloud.google.com/gke-accelerator: nvidia-tesla-t4
+  tolerations:
+    - key: "nvidia.com/gpu"
+      operator: "Exists"
+      effect: "NoSchedule"
+  waitForMigrations:
+    enabled: true
+
+migrateDatabaseJob:
+  enabled: true
+
+dags:
+  persistence:
+    enabled: true
+    existingClaim: airflow-dags-pvc
+
+
+logs:
+  persistence:
+    enabled: true
+    existingClaim: airflow-logs-pvc
