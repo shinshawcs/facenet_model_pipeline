@@ -1,0 +1,5 @@
+facenet-pytorch==2.6.0
+torch==2.2.2+cu118
+google-cloud-storage
+onnxruntime-gpu==1.14.1 
+pycuda==2022.2.2
